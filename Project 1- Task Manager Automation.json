@@ -1,0 +1,362 @@
+{
+  "name": "Project 1- Task Manager Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Project 1- Task Manager Automation",
+        "formDescription": "members profile",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "task name"
+            },
+            {
+              "fieldLabel": "Assigned To"
+            },
+            {
+              "fieldLabel": "Priority",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "low"
+                  },
+                  {
+                    "option": "normal"
+                  },
+                  {
+                    "option": "urgent"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Essential notes"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -1024,
+        -128
+      ],
+      "id": "e6051d15-93a7-4020-adcb-828180b60462",
+      "name": "On form submission",
+      "webhookId": "3fc7f9b9-19e6-41df-bb9d-1e51a9229deb"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "19EOtDq06rdxvSwdhgur71bsMMw5yI55BB7xMe2uyjCg",
+          "mode": "list",
+          "cachedResultName": "Untitled spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EOtDq06rdxvSwdhgur71bsMMw5yI55BB7xMe2uyjCg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1962310404,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EOtDq06rdxvSwdhgur71bsMMw5yI55BB7xMe2uyjCg/edit#gid=1962310404"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Priority": "={{ $json.Priority }}",
+            "Essential Notes": "={{ $json[\"Essential notes\"] }}",
+            "Submitted At": "={{ $json.submittedAt }}",
+            "FormMode": "={{ $json.formMode }}",
+            "Assigned To": "={{ $json[\"Assigned To\"] }}",
+            "Task Name": "={{ $json[\"task name\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Task Name",
+              "displayName": "Task Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assigned To",
+              "displayName": "Assigned To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Essential Notes",
+              "displayName": "Essential Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FormMode",
+              "displayName": "FormMode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -864,
+        -128
+      ],
+      "id": "f2ab0a5b-51f7-4107-84c6-98f52d56eaf9",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "KOADQGew9kglggqi",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18ad6b3b-0727-4efa-ae6c-ad05856da355",
+              "name": "\"message\"",
+              "value": "={{ $json[\"Task Name\"] }} is {{ $json.Priority }} assigned to {{ $json['Assigned To'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        -144
+      ],
+      "id": "24173ba8-3c38-4984-bc42-874313b608e0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json['\"message\"'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        64
+      ],
+      "id": "ef15a132-828d-4b84-9947-e368d7c924f9",
+      "name": "Discord",
+      "webhookId": "5ee0d918-da25-4f4e-ae20-2666383f8241",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "PhLn7yLDAujbb7po",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Priority }}",
+                    "rightValue": "normal",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8123e692-654a-48ef-825e-280c8553c8be"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Normal"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d2ff6e0f-d33d-4872-8608-03caa7ab3534",
+                    "leftValue": "={{ $json.Priority }}",
+                    "rightValue": "urgent",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Do it with all your life"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "de4e5cd8-7527-40a9-bc88-5dd0a93e3eee",
+                    "leftValue": "={{ $json.Priority }}",
+                    "rightValue": "low",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "it's not urgent but don't be lackadaisical"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        -128
+      ],
+      "id": "d69d5768-fc3a-42f4-a5ec-4c13d7fcb562",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "31d08fcd-63e0-4765-94c9-605992a2e17d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "775e04b20d3f4dde3fa95884f47031aae774cac2428331380e1bb2e709ad52ca"
+  },
+  "nodeGroups": [],
+  "id": "PAkDxKudFunQyLOt",
+  "tags": []
+}
